@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+<!-- {% include 'navbar.html' %} -->
+{% block content %}
+{% for product in all_products %}
+<div>
+    {{product.id}}<button><a href="{% url 'products:delete_product' product.id %}">Delete</a></button>
+</div>
+{% endfor %}
+{% endblock %}
