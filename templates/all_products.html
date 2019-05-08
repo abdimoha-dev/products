@@ -4,6 +4,8 @@
 {% for product in all_products %}
 <div>
     {{product.id}}<button><a href="{% url 'products:delete_product' product.id %}">Delete</a></button>
+   <button><a href="{% url 'products:product_update' product.id %}">Edit</a></button>
+
 </div>
 {% endfor %}
 {% endblock %}

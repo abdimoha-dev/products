@@ -1,4 +1,5 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from .models import Product
 from .forms import product_form
 
@@ -12,7 +13,7 @@ def products_view(request):
     return render(request, "products_details.html", context)
 
 def all_products(request):
-    all_products=Product.objects.all()
+    all_products=Product.objects.all().order_by('title')
     context={
         'all_products': all_products,
     }
@@ -23,9 +24,12 @@ def product_create(request):
         form=product_form(request.POST or None)
         if form.is_valid():
             Product.objects.create(**form.cleaned_data)
+            msg = 'saved successful'
+            messages.add_message(request, messages.INFO, msg)
             context={
-            'form': form
+            'form': form,
         }
+            
             return render(request, 'product_create.html', context)
 
     else:
@@ -35,6 +39,27 @@ def product_create(request):
         }
 
         return render(request, 'product_create.html', context)
+
+
+def product_update(request, id):
+    objct=get_object_or_404(Product, id=id)
+    if request.method=='POST':
+        form=product_form(request.POST, instance=objct)
+        if form.is_valid():
+            Product.objects.update_or_create(**form.cleaned_data)
+            context={
+                'form':form
+            }
+            return render(request, 'product_update.html', context)
+
+    else:
+        form=product_form(instance=objct)
+        context={
+            'form': form
+        }
+        return render(request, 'product_update.html', context)
+
+
 def delete_product(request, id):
     objct=Product.objects.get(id=id)
     objct.delete()
