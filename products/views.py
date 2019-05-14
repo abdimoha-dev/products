@@ -46,7 +46,8 @@ def product_update(request, id):
     if request.method=='POST':
         form=product_form(request.POST, instance=objct)
         if form.is_valid():
-            Product.objects.update_or_create(**form.cleaned_data)
+            # product.objects.filter(pk=product_id).update(**request.data)
+            Product.objects.filter(pk=id).update(**form.cleaned_data)
             context={
                 'form':form
             }
@@ -71,11 +72,15 @@ def delete_product(request, id):
     return render(request, 'all_products.html', context)
 
      
-
+from django.http import Http404
 def product_url(request, id):
-    obj=Product.objects.get(id=id)
-    context={
-        'objects': obj
-    }
-    return render(request, 'products_details.html', context)
+    try:
+        obj=Product.objects.get(id=id)
+        context={
+            'objects': obj
+        }
+        return render(request, 'products_details.html', context)
+    except Product.DoesNotExist:
+        raise Http404("product does not exist")
 
+    return render(request, 'products_details.html', context)

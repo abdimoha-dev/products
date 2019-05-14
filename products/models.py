@@ -3,7 +3,7 @@ from django.db import models
 class Product(models.Model):
     title=models.CharField(max_length=20)
     description=models.TextField()
-    price=models.DecimalField(decimal_places=2, max_digits=10000)
+    price=models.DecimalField(decimal_places=2, max_digits=100)
     summary=models.TextField(default='This is cool')
 
     def __str__(self):
